@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solver AI - Homework Companion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        background: 'hsl(260, 30%, 8%)',
+                        primary: 'hsl(265, 89%, 66%)',
+                        card: 'hsl(260, 25%, 12%)',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        heading: ['Outfit', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: hsl(260, 30%, 8%);
+            color: hsl(210, 40%, 98%);
+            background-image: radial-gradient(at 0% 0%, hsla(265, 89%, 66%, 0.15) 0px, transparent 50%), radial-gradient(at 100% 0%, hsla(240, 75%, 60%, 0.15) 0px, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        .glass-panel {
+            background: hsla(260, 25%, 12%, 0.4);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .neon-text { text-shadow: 0 0 20px hsla(265, 89%, 66%, 0.5); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        .animate-spin-slow { animation: spin 1s linear infinite; }
+        .hidden-tab { display: none; }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen font-sans">
+    <main class="flex-1 container mx-auto px-4 py-12 flex flex-col items-center relative z-10">
+        <div class="text-center mb-12 max-w-3xl animate-fade-in">
+            <div class="inline-block px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary font-medium text-sm mb-6">✨ AI-Powered Education</div>
+            <h1 class="text-4xl md:text-6xl font-heading font-bold text-white mb-6 tracking-tight">Master Your <span class="text-primary neon-text">Homework</span></h1>
+            <p class="text-lg text-white/60 max-w-2xl mx-auto leading-relaxed">Stuck on a problem? Upload a photo or type your question and get instant solutions.</p>
+        </div>
+
+        <div class="w-full max-w-2xl animate-fade-in" style="animation-delay: 0.2s;">
+            <div class="glass-panel rounded-xl overflow-hidden">
+                <div class="p-1 bg-black/20 backdrop-blur-md m-4 rounded-lg inline-flex">
+                    <button onclick="switchTab('text')" id="tab-btn-text" class="flex items-center px-6 py-2 rounded-md transition-all duration-300 bg-primary text-white"><i data-lucide="type" class="w-4 h-4 mr-2"></i> Text Question</button>
+                    <button onclick="switchTab('image')" id="tab-btn-image" class="flex items-center px-6 py-2 rounded-md transition-all duration-300 text-white/60 hover:text-white"><i data-lucide="image" class="w-4 h-4 mr-2"></i> Upload Photo</button>
+                </div>
+
+                <div class="p-6 pt-2">
+                    <div id="tab-content-text">
+                        <textarea id="question-input" placeholder="Type your homework question here..." class="w-full min-h-[150px] bg-white/5 border border-white/10 rounded-lg p-4 focus:border-primary/50 focus:outline-none text-lg text-white placeholder:text-white/30 resize-none"></textarea>
+                    </div>
+                    <div id="tab-content-image" class="hidden-tab">
+                        <div class="relative">
+                            <input type="file" accept="image/*" class="hidden" id="image-upload" onchange="handleFileSelect(event)">
+                            <label for="image-upload" id="image-label" class="border-2 border-dashed border-white/10 rounded-xl h-[200px] flex flex-col items-center justify-center bg-white/5 hover:bg-white/10 transition-colors cursor-pointer group overflow-hidden">
+                                <div class="p-4 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-colors mb-4"><i data-lucide="upload" class="w-8 h-8 text-primary"></i></div>
+                                <p class="text-white/70 font-medium">Drop your homework image here</p>
+                                <p class="text-white/40 text-sm mt-1">or click to browse</p>
+                            </label>
+                            <div id="image-preview" class="hidden absolute inset-0 bg-black/80 rounded-xl flex items-center justify-center">
+                                <img id="preview-img" class="max-h-full max-w-full object-contain p-2">
+                                <button onclick="resetImage()" class="absolute top-2 right-2 bg-red-500/80 p-1 rounded-full text-white hover:bg-red-600"><i data-lucide="x" class="w-4 h-4"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <button onclick="solveHomework()" id="solve-btn" class="w-full h-12 text-lg bg-primary hover:bg-primary/90 text-white font-medium rounded-lg shadow-[0_0_20px_-5px_hsl(265,89%,66%)] transition-all duration-300 hover:scale-[1.02] flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"><i data-lucide="sparkles" class="w-5 h-5 mr-2"></i> Solve Homework</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="result-card" class="hidden mt-8 glass-panel border-primary/20 p-6 rounded-xl relative overflow-hidden animate-fade-in">
+                <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent opacity-50"></div>
+                <div class="flex justify-between items-start mb-4">
+                    <div class="flex items-center gap-2 text-primary font-heading font-bold text-xl"><i data-lucide="sparkles" class="w-5 h-5"></i> AI Solution</div>
+                    <button onclick="copyResult()" class="text-white/70 hover:text-white transition-colors"><i data-lucide="copy" class="w-4 h-4"></i></button>
+                </div>
+                <div class="prose prose-invert max-w-none">
+                    <p id="result-text" class="text-white/90 leading-relaxed whitespace-pre-wrap font-sans text-lg"></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="w-full py-8 mt-20 border-t border-white/5 bg-black/20 backdrop-blur-sm">
+        <div class="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2 text-white/60 text-sm font-medium"><span>Designed & Developed by</span><span class="text-primary font-bold neon-text">AA Developer</span></div>
+            <div class="flex items-center gap-6">
+                <a href="https://www.instagram.com/_.aman_yaduvanshi_0001._/" target="_blank" class="text-white/60 hover:text-[#E1306C] transition-colors transform hover:scale-110 duration-200"><i data-lucide="instagram" class="w-6 h-6"></i></a>
+                <a href="https://www.instagram.com/abhijeetyadav011/" target="_blank" class="text-white/60 hover:text-[#E1306C] transition-colors transform hover:scale-110 duration-200"><i data-lucide="instagram" class="w-6 h-6"></i></a>
+                <a href="https://www.youtube.com/@HyperLive09" target="_blank" class="text-white/60 hover:text-[#FF0000] transition-colors transform hover:scale-110 duration-200"><i data-lucide="youtube" class="w-6 h-6"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+      import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyB7v7_B8oK78bA5e0lwu2iHsA43x1jkafg",
+        authDomain: "homework-solver-43022.firebaseapp.com",
+        projectId: "homework-solver-43022",
+        storageBucket: "homework-solver-43022.firebasestorage.app",
+        messagingSenderId: "413237060684",
+        appId: "1:413237060684:web:f9e1e16f6ceb384b07c0e9"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app);
+      
+      window.saveQuestionToDB = async (question, type) => {
+        try {
+            await addDoc(collection(db, "queries"), {
+                text: question,
+                type: type,
+                timestamp: new Date()
+            });
+        } catch (error) {
+            console.error("Error adding document: ", error);
+        }
+      };
+    </script>
+
+    <script>
+        lucide.createIcons();
+        let currentMode = 'text';
+        let uploadedImage = null;
+        
+        // --------------------------------------------------
+        const GEMINI_API_KEY = "AIzaSyBB4u-gAHJQ1FChRD5I35yzuVxsRkw8-qM"; 
+        // --------------------------------------------------
+
+        // Fix: callGeminiAI अब इमेज (Base64) और टेक्स्ट दोनों को सपोर्ट करता है
+        async function callGeminiAI(prompt, imageBase64 = null) {
+            if (!GEMINI_API_KEY) {
+                return "⚠️ Error: API Key missing.";
+            }
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+            
+            let contentsParts = [];
+            
+            if (imageBase64) {
+                // इमेज के लिए
+                const [mimeMatch, data] = imageBase64.split(';base64,');
+                const mimeType = mimeMatch.replace('data:', '');
+                
+                contentsParts.push({
+                    inlineData: {
+                        data: data,
+                        mimeType: mimeType
+                    }
+                });
+                
+                // इमेज के साथ प्रॉम्प्ट
+                contentsParts.push({ text: "इस तस्वीर में दिखाए गए होमवर्क प्रश्न का संक्षिप्त और स्पष्ट उत्तर हिंदी में दें।" });
+
+            } else {
+                // केवल टेक्स्ट के लिए
+                contentsParts.push({ text: "Answer this homework question in Hindi (short and clear): " + prompt });
+            }
+            
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: contentsParts }]
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates[0].content && data.candidates[0].content.parts) {
+                    return data.candidates[0].content.parts[0].text;
+                } else if (data.error) {
+                    console.error("Gemini API Error:", data.error);
+                    return `⚠️ API Error: ${data.error.message || "Could not generate response due to an internal AI issue."}`;
+                } else {
+                    console.error("Unexpected AI response structure:", data);
+                    return "⚠️ AI Error: Could not generate response. (Unexpected response)";
+                }
+
+            } catch (error) {
+                console.error("Fetch/Network Error:", error);
+                return "⚠️ Network Error: Please check your internet connection or console for details.";
+            }
+        }
+
+        function switchTab(mode) {
+            currentMode = mode;
+            const textBtn = document.getElementById('tab-btn-text');
+            const imageBtn = document.getElementById('tab-btn-image');
+            const textContent = document.getElementById('tab-content-text');
+            const imageContent = document.getElementById('tab-content-image');
+
+            if (mode === 'text') {
+                textBtn.className = "flex items-center px-6 py-2 rounded-md transition-all duration-300 bg-primary text-white";
+                imageBtn.className = "flex items-center px-6 py-2 rounded-md transition-all duration-300 text-white/60 hover:text-white";
+                textContent.classList.remove('hidden-tab');
+                imageContent.classList.add('hidden-tab');
+            } else {
+                textBtn.className = "flex items-center px-6 py-2 rounded-md transition-all duration-300 text-white/60 hover:text-white";
+                imageBtn.className = "flex items-center px-6 py-2 rounded-md transition-all duration-300 bg-primary text-white";
+                textContent.classList.add('hidden-tab');
+                imageContent.classList.remove('hidden-tab');
+            }
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedImage = e.target.result;
+                    document.getElementById('preview-img').src = uploadedImage;
+                    document.getElementById('image-preview').classList.remove('hidden');
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function resetImage() {
+            uploadedImage = null;
+            document.getElementById('image-upload').value = '';
+            document.getElementById('image-preview').classList.add('hidden');
+        }
+
+        // Fix: solveHomework अब इमेज डेटा को callGeminiAI में भेजता है
+        async function solveHomework() {
+            const query = document.getElementById('question-input').value;
+            const btn = document.getElementById('solve-btn');
+            const resultCard = document.getElementById('result-card');
+            
+            if (currentMode === 'text' && !query) return;
+            if (currentMode === 'image' && !uploadedImage) {
+                alert("Please upload an image first.");
+                return;
+            }
+
+            if (window.saveQuestionToDB && query && currentMode === 'text') {
+                window.saveQuestionToDB(query, currentMode);
+            }
+
+            const originalBtnContent = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '<i data-lucide="loader-2" class="w-5 h-5 mr-2 animate-spin-slow"></i> Thinking...';
+            lucide.createIcons();
+            resultCard.classList.add('hidden');
+
+            let response = "";
+
+            if (currentMode === 'image') {
+                // इमेज मोड: Base64 इमेज डेटा पास करें
+                response = await callGeminiAI(null, uploadedImage);
+            } else {
+                // टेक्स्ट मोड: केवल टेक्स्ट प्रॉम्प्ट पास करें
+                response = await callGeminiAI(query);
+            }
+
+            document.getElementById('result-text').innerText = response;
+            resultCard.classList.remove('hidden');
+            
+            btn.disabled = false;
+            btn.innerHTML = originalBtnContent;
+            lucide.createIcons();
+        }
+
+        function copyResult() {
+            const text = document.getElementById('result-text').innerText;
+            navigator.clipboard.writeText(text);
+            alert("Copied to clipboard!");
+        }
+    </script>
+</body>
+</html>
