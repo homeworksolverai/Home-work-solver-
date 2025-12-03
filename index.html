@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="FnRjWgd72fNE3Au0XytxNrvIau4C0pA8-1BSSfNXwfM" />
     <title>Solver AI - Homework Companion</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -112,32 +113,32 @@
     </footer>
 
     <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-      import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-      const firebaseConfig = {
-        apiKey: "AIzaSyB7v7_B8oK78bA5e0lwu2iHsA43x1jkafg",
-        authDomain: "homework-solver-43022.firebaseapp.com",
-        projectId: "homework-solver-43022",
-        storageBucket: "homework-solver-43022.firebasestorage.app",
-        messagingSenderId: "413237060684",
-        appId: "1:413237060684:web:f9e1e16f6ceb384b07c0e9"
-      };
+        const firebaseConfig = {
+            apiKey: "AIzaSyB7v7_B8oK78bA5e0lwu2iHsA43x1jkafg",
+            authDomain: "homework-solver-43022.firebaseapp.com",
+            projectId: "homework-solver-43022",
+            storageBucket: "homework-solver-43022.firebasestorage.app",
+            messagingSenderId: "413237060684",
+            appId: "1:413237060684:web:f9e1e16f6ceb384b07c0e9"
+        };
 
-      const app = initializeApp(firebaseConfig);
-      const db = getFirestore(app);
-      
-      window.saveQuestionToDB = async (question, type) => {
-        try {
-            await addDoc(collection(db, "queries"), {
-                text: question,
-                type: type,
-                timestamp: new Date()
-            });
-        } catch (error) {
-            console.error("Error adding document: ", error);
-        }
-      };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        window.saveQuestionToDB = async (question, type) => {
+            try {
+                await addDoc(collection(db, "queries"), {
+                    text: question,
+                    type: type,
+                    timestamp: new Date()
+                });
+            } catch (error) {
+                console.error("Error adding document: ", error);
+            }
+        };
     </script>
 
     <script>
@@ -146,7 +147,7 @@
         let uploadedImage = null;
         
         // --------------------------------------------------
-        const GEMINI_API_KEY = "AIzaSyBB4u-gAHJQ1FChRD5I35yzuVxsRkw8-qM"; 
+        const GEMINI_API_KEY = "AIzaSyBB4u-gAHJQ1FChRD5I35yzuVxsRkw8-qM";  
         // --------------------------------------------------
 
         // Fix: callGeminiAI अब इमेज (Base64) और टेक्स्ट दोनों को सपोर्ट करता है
