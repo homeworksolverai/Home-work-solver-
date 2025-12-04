@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="google-site-verification" content="FnRjWgd72fNE3Au0XytxNrvIau4C0pA8-1BSSfNXwfM" />
-    <title>Solver AI - Homework Companion</title>
+    <title id="website-title">Solver AI - Homework Companion</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -53,7 +52,7 @@
     <main class="flex-1 container mx-auto px-4 py-12 flex flex-col items-center relative z-10">
         <div class="text-center mb-12 max-w-3xl animate-fade-in">
             <div class="inline-block px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary font-medium text-sm mb-6">✨ AI-Powered Education</div>
-            <h1 class="text-4xl md:text-6xl font-heading font-bold text-white mb-6 tracking-tight">Master Your <span class="text-primary neon-text">Homework</span></h1>
+            <h1 id="main-heading" class="text-4xl md:text-6xl font-heading font-bold text-white mb-6 tracking-tight">Master Your <span class="text-primary neon-text">Homework</span></h1>
             <p class="text-lg text-white/60 max-w-2xl mx-auto leading-relaxed">Stuck on a problem? Upload a photo or type your question and get instant solutions.</p>
         </div>
 
@@ -105,9 +104,9 @@
         <div class="container mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
             <div class="flex items-center gap-2 text-white/60 text-sm font-medium"><span>Designed & Developed by</span><span class="text-primary font-bold neon-text">AA Developer</span></div>
             <div class="flex items-center gap-6">
-                <a href="https://www.instagram.com/_.aman_yaduvanshi_0001._/" target="_blank" class="text-white/60 hover:text-[#E1306C] transition-colors transform hover:scale-110 duration-200"><i data-lucide="instagram" class="w-6 h-6"></i></a>
-                <a href="https://www.instagram.com/abhijeetyadav011/" target="_blank" class="text-white/60 hover:text-[#E1306C] transition-colors transform hover:scale-110 duration-200"><i data-lucide="instagram" class="w-6 h-6"></i></a>
-                <a href="https://www.youtube.com/@HyperLive09" target="_blank" class="text-white/60 hover:text-[#FF0000] transition-colors transform hover:scale-110 duration-200"><i data-lucide="youtube" class="w-6 h-6"></i></a>
+                <a id="insta-link-1" href="https://www.instagram.com/_.aman_yaduvanshi_0001._/" target="_blank" class="text-white/60 hover:text-[#E1306C] transition-colors transform hover:scale-110 duration-200"><i data-lucide="instagram" class="w-6 h-6"></i></a>
+                <a id="insta-link-2" href="https://www.instagram.com/abhijeetyadav011/" target="_blank" class="text-white/60 hover:text-[#E1306C] transition-colors transform hover:scale-110 duration-200"><i data-lucide="instagram" class="w-6 h-6"></i></a>
+                <a id="youtube-link" href="https://www.youtube.com/@HyperLive09" target="_blank" class="text-white/60 hover:text-[#FF0000] transition-colors transform hover:scale-110 duration-200"><i data-lucide="youtube" class="w-6 h-6"></i></a>
             </div>
         </div>
     </footer>
@@ -146,14 +145,54 @@
         let currentMode = 'text';
         let uploadedImage = null;
         
-        // --------------------------------------------------
-        const GEMINI_API_KEY = "AIzaSyBB4u-gAHJQ1FChRD5I35yzuVxsRkw8-qM";  
-        // --------------------------------------------------
+        // --- ADMIN PANEL द्वारा सेट की गई सेटिंग्स यहाँ लोड होंगी ---
+        // **महत्वपूर्ण:** नई API Key सीधे डिफ़ॉल्ट सेटिंग्स में डाल दी गई है।
+        const DEFAULT_SETTINGS = {
+            'WEBSITE_TITLE': 'Solver AI - Homework Companion',
+            'INSTAGRAM_LINK': 'https://www.instagram.com/_.aman_yaduvanshi_0001._/',
+            'YOUTUBE_LINK': 'https://www.youtube.com/@HyperLive09',
+            // आपकी नई Key यहाँ अपडेट की गई है।
+            'GEMINI_API_KEY': 'AIzaSyAKKEuWNrbPxpBz218_itvzfj5e2Voo1qE' 
+        };
 
-        // Fix: callGeminiAI अब इमेज (Base64) और टेक्स्ट दोनों को सपोर्ट करता है
+        const GEMINI_API_KEY = localStorage.getItem('GEMINI_API_KEY') || DEFAULT_SETTINGS.GEMINI_API_KEY; 
+        // -----------------------------------------------------------
+
+        // पेज लोड होने पर सेटिंग्स अप्लाई करें
+        document.addEventListener('DOMContentLoaded', () => {
+            const newTitle = localStorage.getItem('WEBSITE_TITLE') || DEFAULT_SETTINGS.WEBSITE_TITLE;
+            document.title = newTitle; // Title टैग अपडेट
+            
+            // H1 टैग अपडेट 
+            const h1Element = document.getElementById('main-heading');
+            if (h1Element) {
+                // H1 के टेक्स्ट को अपडेट करें, बाकी स्पैन को रहने दें
+                h1Element.childNodes[0].nodeValue = newTitle.split(' - ')[0] + ' '; 
+            }
+
+            // Social Links अपडेट
+            const instaLink = localStorage.getItem('INSTAGRAM_LINK') || DEFAULT_SETTINGS.INSTAGRAM_LINK;
+            const youtubeLink = localStorage.getItem('YOUTUBE_LINK') || DEFAULT_SETTINGS.YOUTUBE_LINK;
+            
+            // Insta Link 1 
+            const instaAnchor1 = document.getElementById('insta-link-1');
+            if (instaAnchor1) {
+                instaAnchor1.href = instaLink;
+            }
+            
+            // YouTube Link
+            const youtubeAnchor = document.getElementById('youtube-link');
+            if (youtubeAnchor) {
+                youtubeAnchor.href = youtubeLink;
+            }
+
+            lucide.createIcons(); // सुनिश्चित करें कि Lucide Icons अपडेटेड रहें
+        });
+        
         async function callGeminiAI(prompt, imageBase64 = null) {
-            if (!GEMINI_API_KEY) {
-                return "⚠️ Error: API Key missing.";
+            // Key सीधे कोड से या लोकल स्टोरेज से ली जाएगी
+            if (!GEMINI_API_KEY || GEMINI_API_KEY === 'YOUR_API_KEY_HERE') {
+                return "⚠️ Error: API Key missing or not updated in Admin Panel/Code.";
             }
 
             const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
@@ -161,7 +200,6 @@
             let contentsParts = [];
             
             if (imageBase64) {
-                // इमेज के लिए
                 const [mimeMatch, data] = imageBase64.split(';base64,');
                 const mimeType = mimeMatch.replace('data:', '');
                 
@@ -172,11 +210,9 @@
                     }
                 });
                 
-                // इमेज के साथ प्रॉम्प्ट
                 contentsParts.push({ text: "इस तस्वीर में दिखाए गए होमवर्क प्रश्न का संक्षिप्त और स्पष्ट उत्तर हिंदी में दें।" });
 
             } else {
-                // केवल टेक्स्ट के लिए
                 contentsParts.push({ text: "Answer this homework question in Hindi (short and clear): " + prompt });
             }
             
@@ -195,6 +231,7 @@
                     return data.candidates[0].content.parts[0].text;
                 } else if (data.error) {
                     console.error("Gemini API Error:", data.error);
+                    // यहां 'API Leaked' एरर आ सकता है अगर Key फिर से ब्लॉक हुई
                     return `⚠️ API Error: ${data.error.message || "Could not generate response due to an internal AI issue."}`;
                 } else {
                     console.error("Unexpected AI response structure:", data);
@@ -246,7 +283,6 @@
             document.getElementById('image-preview').classList.add('hidden');
         }
 
-        // Fix: solveHomework अब इमेज डेटा को callGeminiAI में भेजता है
         async function solveHomework() {
             const query = document.getElementById('question-input').value;
             const btn = document.getElementById('solve-btn');
@@ -271,10 +307,8 @@
             let response = "";
 
             if (currentMode === 'image') {
-                // इमेज मोड: Base64 इमेज डेटा पास करें
                 response = await callGeminiAI(null, uploadedImage);
             } else {
-                // टेक्स्ट मोड: केवल टेक्स्ट प्रॉम्प्ट पास करें
                 response = await callGeminiAI(query);
             }
 
